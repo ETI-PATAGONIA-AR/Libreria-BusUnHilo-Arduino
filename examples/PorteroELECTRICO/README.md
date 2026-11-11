@@ -82,6 +82,8 @@ En los esclavos, el tono del buzzer pasivo utiliza Timer1 en el pin D9. Por eso,
 
 ## Cableado general
 
+<img width="1497" height="2042" alt="DiagramCIRCUIT" src="https://github.com/user-attachments/assets/e0a00158-f75e-4964-b646-11a356668ae5" />
+
 - Une el pin D8 del maestro y de todos los esclavos a un único conductor de datos.
 - Coloca una resistencia *pull-up* externa de `4,7 kΩ` entre el bus y `+5 V`.
 - Conecta GND común entre todas las placas.
