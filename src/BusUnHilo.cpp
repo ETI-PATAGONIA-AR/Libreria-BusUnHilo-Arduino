@@ -1,6 +1,7 @@
 /*
-  BusUnHilo - Bus casero de un solo hilo, bidireccional, de 8 bits.
-  Autor: torres.electronico (Forosdeelectronica)  -  Licencia MIT
+  ETI PATAGONIA® | © 2026 prof.martintorres. Todos los derechos reservados.
+  web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
+  repositorios: https://github.com/ETI-PATAGONIA-AR
 */
 #include "BusUnHilo.h"
 
