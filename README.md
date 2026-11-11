@@ -1,12 +1,10 @@
+<a id="top"></a>
 # Libreria-BusUnHilo-Arduino
 Librería que nos permite implementar un puerto en modo bidireccional, e incluye un bus de comunicación que no permite comunicarnos con hasta 254 dispositivos.
 
 *Índice (Language index)*
-- [🇦🇷 Español](#espanol)
-- [🇬🇧 English](#english)
-- [🇮🇹 Italiano](#italiano)
-- [🇫🇷 Français](#francais)
-- [🇷🇺 Русский](#ruso)
+
+[🇦🇷 Español](#espanol) · [🇬🇧 English](#english) · [🇮🇹 Italiano](#italiano) · [🇫🇷 Français](#francais) · [🇷🇺 Русский](#ruso)
 
 ---
 [![Demo1 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=IaVxYmmLfTs)
@@ -117,6 +115,8 @@ Próximos pasos posibles: modo con interrupción para el esclavo, mayor velocida
 - Web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
 - Repositorios: https://github.com/ETI-PATAGONIA-AR
 
+[⬆️ Volver arriba](#top)
+
 ---
 
 <a id="english"></a>
@@ -221,6 +221,8 @@ Author: ETI PATAGONIA - prof.martintorres@educ.ar
 Website: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
 Repositories: https://github.com/ETI-PATAGONIA-AR
 
+[⬆️ Back to top](#top)
+
 ---
 
 <a id="italiano"></a>
@@ -324,6 +326,8 @@ Possibili sviluppi: modalità slave con interrupt, maggiore velocità ed esempio
 Autore: ETI PATAGONIA - prof.martintorres@educ.ar
 Sito web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
 Repository: https://github.com/ETI-PATAGONIA-AR
+
+[⬆️ Torna all'indice](#top)
 
 ---
 
@@ -430,6 +434,8 @@ Auteur : ETI PATAGONIA - prof.martintorres@educ.ar
 Site web : https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
 Dépôts : https://github.com/ETI-PATAGONIA-AR
 
+[⬆️ Retour en haut](#top)
+
 ---
 
 <a id="ruso"></a>
@@ -499,7 +505,7 @@ void loop(){ bus.poll(); }               // вызывать ОЧЕНЬ част
 
 ## Протокол (краткое описание)
 
-Все данные передаются начиная с младшего значащего бита (LSB first). Каждый кадр начинается с сброса со стороны мастера (линия удерживается в низком состоянии 480 µs), после чего следует импульс присутствия ведомых устройств.
+Все данные передаются начиная с младшего значащего бита (LSB first). Каждый кадр начинается со сброса со стороны мастера (линия удерживается в низком состоянии 480 µs), после чего следует импульс присутствия ведомых устройств.
 
 ```text
 Master → [DIR][CMD][REG]([N] для блока)([DATA] при записи)[CRC8]
@@ -534,3 +540,5 @@ Slave  → ACK (1 бит — низкий уровень)
 Автор: ETI PATAGONIA - prof.martintorres@educ.ar
 Сайт: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
 Репозитории: https://github.com/ETI-PATAGONIA-AR
+
+[⬆️ Наверх](#top)
