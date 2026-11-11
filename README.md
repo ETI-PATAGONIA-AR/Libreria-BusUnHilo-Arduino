@@ -2,15 +2,16 @@
 Librería que nos permite implementar un puerto en modo bidireccional, e incluye un bus de comunicación que no permite comunicarnos con hasta 254 dispositivos.
 
 *Índice (Language index)*
-- 🇦🇷 Español
-- 🇬🇧 English
-- 🇮🇹 Italiano
-- 🇫🇷 Français
-- 🇷🇺 Русский
+- [🇦🇷 Español](#espanol)
+- [🇬🇧 English](#english)
+- [🇮🇹 Italiano](#italiano)
+- [🇫🇷 Français](#francais)
+- [🇷🇺 Русский](#ruso)
 
 ---
 [![Demo1 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=IaVxYmmLfTs)
 
+<a id="espanol"></a>
 # BusUnHilo (🇦🇷 Español)
 
 Bus **casero de un solo hilo**, bidireccional, de 8 bits, para Arduino (AVR) y otras placas.
@@ -118,6 +119,7 @@ Próximos pasos posibles: modo con interrupción para el esclavo, mayor velocida
 
 ---
 
+<a id="english"></a>
 # BusUnHilo (🇬🇧 English)
 
 A homemade, bidirectional, 8-bit, single-wire bus for Arduino (AVR) and other boards. One master and up to 254 slaves share one data wire (open-drain line + pull-up resistor).
@@ -221,6 +223,7 @@ Repositories: https://github.com/ETI-PATAGONIA-AR
 
 ---
 
+<a id="italiano"></a>
 # BusUnHilo (🇮🇹 Italiano)
 
 Bus artigianale a filo singolo, bidirezionale e a 8 bit, per Arduino (AVR) e altre schede. Un master e fino a 254 slave condividono un unico filo dati (linea open-drain + resistenza di pull-up).
@@ -324,6 +327,7 @@ Repository: https://github.com/ETI-PATAGONIA-AR
 
 ---
 
+<a id="francais"></a>
 # BusUnHilo (🇫🇷 Français)
 
 Bus artisanal à un seul fil, bidirectionnel et de 8 bits, pour Arduino (AVR) et d'autres cartes. Un maître et jusqu'à 254 esclaves partagent un seul fil de données (ligne à drain ouvert + résistance de pull-up).
@@ -428,6 +432,7 @@ Dépôts : https://github.com/ETI-PATAGONIA-AR
 
 ---
 
+<a id="ruso"></a>
 # BusUnHilo (🇷🇺 Русский)
 
 Самодельная двунаправленная 8-битная однопроводная шина для Arduino (AVR) и других плат. Один ведущий контроллер и до 254 ведомых устройств разделяют один провод данных (линия с открытым стоком + подтягивающий резистор).
