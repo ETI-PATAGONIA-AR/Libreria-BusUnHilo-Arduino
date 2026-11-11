@@ -1,10 +1,17 @@
 # Libreria-BusUnHilo-Arduino
 Librería que nos permite implementar un puerto en modo bidireccional, e incluye un bus de comunicación que no permite comunicarnos con hasta 254 dispositivos.
 
+*Índice (Language index)*
+- 🇦🇷 Español
+- 🇬🇧 English
+- 🇮🇹 Italiano
+- 🇫🇷 Français
+- 🇷🇺 Русский
+  
 ---
 [![Demo1 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=IaVxYmmLfTs)
 
-# BusUnHilo
+# BusUnHilo (🇦🇷 Español)
 
 Bus **casero de un solo hilo**, bidireccional, de 8 bits, para Arduino (AVR) y otras placas.
 Un maestro y hasta 254 esclavos comparten **un cable de datos** (drenador abierto + resistencia pull-up).
@@ -15,8 +22,6 @@ Nació de los ejemplos de *https://forosdeelectronica.com/threads/arduino-cambio
 - **CRC8** (Dallas/Maxim), **ACK** y **reintentos** automáticos.
 - **Identificación** (registro `0xFF`) y **escáner** de bus.
 - En AVR usa registros directos (`DDR/PORT/PIN`) igual que el sketch original; en otras placas usa `pinMode/digitalRead`.
-
----
 
 ## Cableado
 
@@ -29,8 +34,6 @@ Nació de los ejemplos de *https://forosdeelectronica.com/threads/arduino-cambio
 ```
 GND común obligatorio. Pull-up externa de 4,7 kΩ solo en Arduino MASTER (tambien con `begin(pin, true)` se usa la interna, más débil: solo para cables cortos de prueba).
 Todos los dispositivos deben trabajar al mismo nivel de tensión.
-
----
 
 ## Uso rápido
 
@@ -55,9 +58,7 @@ uint8_t alLeer(uint8_t reg){ return 0; }
 void setup(){ bus.begin(8, 1); bus.onWrite(alEscribir); bus.onRead(alLeer); }
 void loop(){ bus.poll(); }               // llamar MUY seguido
 ```
-Ejemplos completos en `examples/`: `Maestro_Basico`, `Esclavo_Basico`, `Maestro_Escaner`, `REDsensorMasterSlave`
-
----
+Ejemplos completos en `examples/`: `Maestro_Basico`, `Esclavo_Basico`, `Maestro_Escaner`, `REDsensorMasterSlave`, `PorteroELECTRICO`
 
 ## API
 
@@ -77,8 +78,6 @@ Maestro (`BusUnHiloMaster`)
 
 Esclavo (`BusUnHiloSlave`): `begin(pin, dir, pullup)`, `setDeviceType(t)`, `onWrite(cb)`, `onRead(cb)`, `poll()`.
 
----
-
 ## Protocolo (resumen)
 
 Todo LSB primero. Cada trama empieza con un **reset** del maestro (bajo 480 µs) y la **presencia** de los esclavos.
@@ -91,8 +90,6 @@ Si es lectura: Esclavo → [DATOS][CRC8 de los datos]
 Bit: el maestro baja la línea; 1 = pulso corto (6 µs), 0 = pulso largo (60 µs); en lectura el maestro hace un pulso de 3 µs y el esclavo mantiene bajo para responder 0.
 Los tiempos se pueden ajustar con `#define BUH_...` (ver `src/BusUnHilo.h`).
 
----
-
 ## Rendimiento y límites (leer antes de usar)
 
 - Un registro tarda **~4-5 ms** por trama (≈ 200 tramas/s); un bloque de 16 bytes ≈ 12 ms. Sirve para sensores, comandos y texto; **no** para video ni audio.
@@ -102,22 +99,16 @@ Los tiempos se pueden ajustar con `#define BUH_...` (ver `src/BusUnHilo.h`).
 - Durante una trama el esclavo tiene las interrupciones **deshabilitadas** unos ms: `millis()` puede atrasar un poco y un `Serial` rápido (115200) puede perder bytes en ese lapso.
 - Cable corto (decenas de cm a pocos metros) y GND común. En ambientes ruidosos, bajar la velocidad (alargar tiempos) y confiar en CRC + reintentos.
 
----
-
 ## Estado de las pruebas
 
 - Probado en un **simulador determinista** (`extras/simulador`): 1 maestro + 2 esclavos, 600/600 tramas sin reintentos, bloques de 16 bytes, difusión, `identify` y `scan`; CRC contra el vector conocido de 1-Wire.
 - Verificado que **compila** (sintaxis) en las ramas AVR y genérica.
 - **Aún no probado en hardware real.** Se agradecen reportes (placa, frecuencia de reloj, largo de cable, errores).
 
----
-
 ## Ideas
 
 Red de sensores, expansor de E/S remoto, display esclavo (texto/valores), nodos de actuadores, vigías con latido (`ping`).
 Próximos pasos posibles: modo con interrupción para el esclavo, mayor velocidad, ejemplo de display.
-
----
 
 ## Desarrollado por:
 
@@ -126,4 +117,5 @@ Próximos pasos posibles: modo con interrupción para el esclavo, mayor velocida
  - Repositorios: https://github.com/ETI-PATAGONIA-AR
 
 ---
+
 
