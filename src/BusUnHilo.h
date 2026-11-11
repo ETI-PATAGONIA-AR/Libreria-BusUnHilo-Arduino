@@ -1,6 +1,8 @@
 /*
   BusUnHilo - Bus casero de un solo hilo, bidireccional, de 8 bits.
-  Autor: torres.electronico (Forosdeelectronica)  -  Licencia MIT
+  Autor: ETI PATAGONIA® | © 2026 prof.martintorres. Todos los derechos reservados.
+  web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
+  repositorios: https://github.com/ETI-PATAGONIA-AR
 
   Idea: un unico cable de datos "drenador abierto" (wired-AND) con una
   resistencia pull-up. Nadie maneja la linea en alto: o se tira a GND o se
