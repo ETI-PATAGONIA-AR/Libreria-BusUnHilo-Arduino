@@ -48,4 +48,4 @@ El bus de datos es una única línea compartida por el pin `8` del maestro y de 
 3. Abre el monitor serie del maestro a **57600 baudios** para ver el estado y los errores de comunicación.
 4. Prueba los pulsadores del maestro y de los esclavos, y gira el potenciómetro del Esclavo 2.
 
-El autor informa que probó este montaje con hasta **34 metros de conductor** sin fallas. Es un resultado de esa prueba concreta, no una garantía de distancia para cualquier instalación: el comportamiento puede depender del cable, la topología, las conexiones, las condiciones eléctricas y la configuración del bus.
+Se probó este montaje con hasta **34 metros de conductor** sin fallas. Es un resultado de esa prueba concreta, no una garantía de distancia para cualquier instalación: el comportamiento puede depender del cable, la topología, las conexiones, las condiciones eléctricas y la configuración del bus.
