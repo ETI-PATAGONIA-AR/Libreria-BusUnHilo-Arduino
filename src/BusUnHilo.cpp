@@ -1,7 +1,6 @@
 /*
-  ETI PATAGONIA® | © 2026 prof.martintorres. Todos los derechos reservados.
-  web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
-  repositorios: https://github.com/ETI-PATAGONIA-AR
+  BusUnHilo - Bus casero de un solo hilo, bidireccional, de 8 bits.
+  Autor: torres.electronico (Forosdeelectronica)  -  Licencia MIT
 */
 #include "BusUnHilo.h"
 
@@ -33,17 +32,6 @@ void BusUnHiloBase::pinBegin(uint8_t pin, bool pullup) {
   _rPORT = portOutputRegister(port);
   _rPIN  = portInputRegister(port);
   _mask  = digitalPinToBitMask(pin);
-#elif defined(BUH_USA_REG_ESP)
-  _bit = 1UL << pin;
-  #if defined(ESP32)
-  pinMode(pin, OUTPUT);                       // deja el pin enrutado como GPIO simple
-  #endif
-  pinMode(pin, pullup ? INPUT_PULLUP : INPUT);
-  #if defined(ESP8266)
-  GPOC = _bit;                                // latch de salida en 0
-  #else
-  REG_WRITE(GPIO_OUT_W1TC_REG, _bit);
-  #endif
 #else
   _num = pin;
 #endif
@@ -58,14 +46,8 @@ bool BusUnHiloBase::waitLevel(bool level, uint16_t us) {
   }
   return false;
 #else
-  // Solo es un timeout aproximado. AVR: ~12 ciclos por iteracion (contador de 32 bits).
-  // Otras placas: iteraciones mas cortas, se divide por menos para no quedarse cortos.
-  #if defined(__AVR__)
-  const uint32_t ciclosPorIter = 12UL;
-  #else
-  const uint32_t ciclosPorIter = 4UL;
-  #endif
-  uint32_t n = ((uint32_t)us * (F_CPU / 1000000UL)) / ciclosPorIter;
+  // ~12 ciclos por iteracion (contador de 32 bits); es solo un timeout aproximado
+  uint32_t n = ((uint32_t)us * (F_CPU / 1000000UL)) / 12UL;
   while (n--) {
     if (busRead() == level) return true;
   }
@@ -84,7 +66,7 @@ void BusUnHiloMaster::begin(uint8_t pin, bool internalPullup) {
 bool BusUnHiloMaster::reset() {
   busRelease();
   delayMicroseconds(5);
-  if (!busRead()) return false;          // linea atascada en bajo
+  if (!busRead()) return false;         // linea atascada en bajo
   bool presence;
   {
     BUH_SAVE_IRQ();
@@ -155,7 +137,7 @@ bool BusUnHiloMaster::transact(uint8_t addr, uint8_t cmd, uint8_t reg, uint8_t *
     }
     writeByte(crc);
 
-    if (addr != 0) {                                  // difusion (0): sin ACK
+    if (addr != 0) {                            // difusion (0): sin ACK
       delayMicroseconds(BUH_TURNAROUND_US);           // el esclavo valida CRC y prepara datos
       if (readBit()) { _err = BUH_ERR_NO_ACK; continue; }   // ACK = linea en bajo
     }
@@ -200,7 +182,7 @@ bool BusUnHiloMaster::identify(uint8_t addr, uint8_t &deviceType) {
 
 uint8_t BusUnHiloMaster::scan(uint8_t *found, uint8_t maxFound, uint8_t first, uint8_t last) {
   uint8_t savedRetries = _retries;
-  _retries = 0;                                      // el escaneo no reintenta
+  _retries = 0;                                     // el escaneo no reintenta
   uint8_t count = 0;
   if (first < 1) first = 1;
   if (last > 254) last = 254;
@@ -211,6 +193,19 @@ uint8_t BusUnHiloMaster::scan(uint8_t *found, uint8_t maxFound, uint8_t first, u
   return count;
 }
 
+#if defined(ARDUINO_AVR_DIGISPARK)
+const char *BusUnHiloMaster::errorText(uint8_t code) {
+  switch (code) {
+    case BUH_OK:              return "OK";
+    case BUH_ERR_NO_PRESENCE: return "Sin presencia (nadie respondio al reset)";
+    case BUH_ERR_NO_ACK:      return "Sin ACK (direccion inexistente o trama danada)";
+    case BUH_ERR_CRC:         return "CRC invalido";
+    case BUH_ERR_BUS_STUCK:   return "Bus atascado en bajo";
+    case BUH_ERR_ADDR:        return "Parametro invalido";
+  }
+  return "?";
+}
+#else
 const __FlashStringHelper *BusUnHiloMaster::errorText(uint8_t code) {
   switch (code) {
     case BUH_OK:              return F("OK");
@@ -222,6 +217,7 @@ const __FlashStringHelper *BusUnHiloMaster::errorText(uint8_t code) {
   }
   return F("?");
 }
+#endif
 
 /* ====================== Esclavo ====================== */
 
@@ -239,7 +235,7 @@ int8_t BusUnHiloSlave::rxBit(uint16_t timeoutUs) {
   if (!waitLevel(false, timeoutUs)) return -1;       // flanco de bajada = inicio de slot
   delayMicroseconds(BUH_SLV_SAMPLE_US);
   bool v = busRead();
-  if (!v) {                                           // era un 0: esperar a que termine
+  if (!v) {                                         // era un 0: esperar a que termine
     if (!waitLevel(true, BUH_SLV_BIT_END_US)) return -1;
   }
   return v ? 1 : 0;
@@ -302,14 +298,14 @@ bool BusUnHiloSlave::handleFrame() {
     }
   }
   int16_t r = rxByte(false);  if (r < 0) return false;
-  if ((uint8_t)r != crc) return false;                 // CRC malo: silencio -> el maestro reintenta
+  if ((uint8_t)r != crc) return false;                  // CRC malo: silencio -> el maestro reintenta
 
   bool mine  = ((uint8_t)a == _addr);
   bool bcast = (a == 0 && isWrite);
   if (!mine && !bcast) return false;
 
   uint8_t out[BUH_MAX_BLOCK];
-  if (isRead) {                                        // preparar datos ANTES del ACK (onRead debe ser rapido)
+  if (isRead) {                                         // preparar datos ANTES del ACK (onRead debe ser rapido)
     for (uint8_t i = 0; i < n; i++) {
       uint8_t rr = (uint8_t)(rg + i);
       if (rr == BUH_REG_ID)  out[i] = _devType;
@@ -317,7 +313,7 @@ bool BusUnHiloSlave::handleFrame() {
       else                   out[i] = 0xFF;
     }
   }
-  if (mine) { if (!txBit(false)) return false; }       // ACK
+  if (mine) { if (!txBit(false)) return false; }        // ACK
   if (isRead) {
     uint8_t oc = 0;
     for (uint8_t i = 0; i < n; i++) { if (!txByte(out[i])) return false; oc = crc8Update(oc, out[i]); }
@@ -335,22 +331,22 @@ bool BusUnHiloSlave::poll() {
   if (busRead()) return false;                         // linea en reposo
   uint32_t t0 = micros();
   while (!busRead()) {
-    if ((uint32_t)(micros() - t0) > BUH_SLV_MAX_RESET_US) return false;   // atascado / muy largo
+    if ((uint32_t)(micros() - t0) > BUH_SLV_MAX_RESET_US) return false;    // atascado / muy largo
   }
-  if ((uint32_t)(micros() - t0) < BUH_SLV_MIN_RESET_US) return false;     // pulso de bit, no reset
+  if ((uint32_t)(micros() - t0) < BUH_SLV_MIN_RESET_US) return false;      // pulso de bit, no reset
 
   bool ok;
   _wn = 0;
   {
     BUH_SAVE_IRQ();
     delayMicroseconds(BUH_SLV_PRESENCE_DELAY_US);
-    busLow();                                           // pulso de presencia
+    busLow();                                             // pulso de presencia
     delayMicroseconds(BUH_SLV_PRESENCE_US);
     busRelease();
     ok = handleFrame();
     BUH_RESTORE_IRQ();
   }
-  if (ok && _wn && _onWrite) {                          // callbacks de escritura, con interrupciones activas
+  if (ok && _wn && _onWrite) {                         // callbacks de escritura, con interrupciones activas
     for (uint8_t i = 0; i < _wn; i++) {
       uint8_t rr = (uint8_t)(_wreg + i);
       if (rr != BUH_REG_ID) _onWrite(rr, _wbuf[i]);
