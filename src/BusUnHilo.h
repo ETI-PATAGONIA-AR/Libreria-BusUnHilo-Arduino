@@ -1,8 +1,6 @@
 /*
   BusUnHilo - Bus casero de un solo hilo, bidireccional, de 8 bits.
-  Autor: ETI PATAGONIA® | © 2026 prof.martintorres. Todos los derechos reservados.
-  web: https://eti-patagonia-ar.github.io/ETI-Patagonia-ARG/index.html
-  repositorios: https://github.com/ETI-PATAGONIA-AR
+  Autor: torres.electronico (Forosdeelectronica)  -  Licencia MIT
 
   Idea: un unico cable de datos "drenador abierto" (wired-AND) con una
   resistencia pull-up. Nadie maneja la linea en alto: o se tira a GND o se
@@ -24,49 +22,15 @@
 
 #define BUSUNHILO_VERSION "0.1.0"
 
-/* ================================================================== */
-/*  CONFIGURACION POR PLACA  (editar ESTE archivo; el sketch no sirve) */
-/*                                                                    */
-/*  Placa                      Camino que usa la libreria             */
-/*  -------------------------  -------------------------------------- */
-/*  Uno, Nano, Pro Mini, Mega  AVR: registros directos (rapido)       */
-/*  ATtiny85 (8 MHz o mas)     AVR: registros directos (rapido)       */
-/*  ESP8266 / ESP32            generico (pinMode/digitalRead) o, si    */
-/*                             activas BUH_ESP_REGISTROS, registros    */
-/*  Otras (RP2040, STM32...)   generico (mas lento): usar MODO LENTO   */
-/*                                                                    */
-/*  REGLA: todas las placas del mismo bus con la MISMA configuracion   */
-/*  de tiempos (todas normal, o todas en MODO LENTO).                  */
-/*                                                                    */
-/*  Opciones (quitar las // para activar):                             */
-/*    //#define BUH_MODO_LENTO      tiempos ~3,5x mas largos (abajo)    */
-/*    //#define BUH_ESP_REGISTROS   EXPERIMENTAL: ESP8266 (GPIO 0..15)  */
-/*                                  o ESP32 (GPIO 0..31): acceso       */
-/*                                  directo a registros GPIO           */
-/* ================================================================== */
-//#define BUH_ESP_REGISTROS
-
-#if (defined(ESP8266) || defined(ESP32)) && defined(BUH_ESP_REGISTROS)
-  #define BUH_USA_REG_ESP
-  #if defined(ESP32)
-    #include "soc/soc.h"
-    #include "soc/gpio_reg.h"
-  #endif
-#endif
-
-#if defined(__AVR__) && (F_CPU < 8000000UL) && !defined(BUH_MODO_LENTO) && !defined(BUH_SIM)
-  #warning "BusUnHilo: con reloj menor a 8 MHz (p.ej. ATtiny85 a 1 MHz) los tiempos normales no alcanzan. Usar 8 MHz o mas."
-#endif
-
 /* ------------------------------------------------------------------ */
 /*  MODO LENTO (~3,5x mas lento, mas tolerante). Util para Proteus u    */
-/*  otros simuladores, cables largos o ambientes ruidosos.              */
-/*  PARA ACTIVARLO: quitar las // de la linea siguiente y GUARDAR.      */
-/*  Debe estar igual en el maestro y en TODOS los esclavos.             */
-/*  (Un #define en el sketch NO sirve: la libreria se compila aparte.)  */
+/*  otros simuladores, cables largos o ambientes ruidosos.             */
+/*  PARA ACTIVARLO: quitar las // de la linea siguiente y GUARDAR.     */
+/*  Debe estar igual en el maestro y en TODOS los esclavos.            */
+/*  (Un #define en el sketch NO sirve: la libreria se compila aparte.)   */
 /* ------------------------------------------------------------------ */
 //#define BUH_MODO_LENTO
-
+#define BUH_MODO_LENTO
 #ifdef BUH_MODO_LENTO
   #define BUH_RESET_LOW_US          1000
   #define BUH_PRESENCE_SAMPLE_US    200
@@ -223,18 +187,6 @@ class BusUnHiloBase {
   }
   volatile uint8_t *_rDDR, *_rPORT, *_rPIN;
   uint8_t _mask;
-#elif defined(BUH_USA_REG_ESP) && defined(ESP8266)
-  // ESP8266: GPIO 0..15 (no el 16). Los macros GPOC/GPES/GPEC/GPI los da el core.
-  inline void busLow()     { GPOC = _bit; GPES = _bit; }   // latch en 0 + salida habilitada
-  inline void busRelease() { GPEC = _bit; }                // salida deshabilitada = alta impedancia
-  inline bool busRead()    { return (GPI & _bit) != 0; }
-  uint32_t _bit;
-#elif defined(BUH_USA_REG_ESP) && defined(ESP32)
-  // ESP32: GPIO 0..31.
-  inline void busLow()     { REG_WRITE(GPIO_OUT_W1TC_REG, _bit); REG_WRITE(GPIO_ENABLE_W1TS_REG, _bit); }
-  inline void busRelease() { REG_WRITE(GPIO_ENABLE_W1TC_REG, _bit); }
-  inline bool busRead()    { return (REG_READ(GPIO_IN_REG) & _bit) != 0; }
-  uint32_t _bit;
 #else
   inline void busLow()     { digitalWrite(_num, LOW); pinMode(_num, OUTPUT); }
   inline void busRelease() { pinMode(_num, _pullup ? INPUT_PULLUP : INPUT); }
@@ -259,10 +211,15 @@ class BusUnHiloMaster : public BusUnHiloBase {
   bool identify(uint8_t addr, uint8_t &deviceType);   // lee BUH_REG_ID
   uint8_t scan(uint8_t *found, uint8_t maxFound, uint8_t first = 1, uint8_t last = 254);
   uint8_t lastError() const { return _err; }
+
+#if defined(ARDUINO_AVR_DIGISPARK)
+  static const char *errorText(uint8_t code);
+#else
   static const __FlashStringHelper *errorText(uint8_t code);
+#endif
 
   // ---- bajo nivel (por si quieres armar tu propio protocolo) ----
-  bool    reset();                 // true si hay presencia
+  bool    reset();                    // true si hay presencia
   void    writeBit(bool b);
   bool    readBit();
   void    writeByte(uint8_t v);
