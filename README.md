@@ -14,7 +14,7 @@ Librería que nos permite implementar un puerto en modo bidireccional, e incluye
 
 Bus **casero de un solo hilo**, bidireccional, de 8 bits, para Arduino (AVR) y otras placas.
 Un maestro y hasta 254 esclavos comparten **un cable de datos** (drenador abierto + resistencia pull-up).
-Nació de los ejemplos de *https://forosdeelectronica.com/threads/arduino-cambio-de-direcci%C3%B3n-output-input-sin-romper-nada.193872/* de Forosdeelectronica (torres.electronico).
+Nació de los ejemplos de *https://forosdeelectronica.com/threads/arduino-cambio-de-direcci%C3%B3n-output-input-sin-romper-nada.193872/* de Forosdeelectronica (torres.electronico) y sigo trabajando en nuevas versiones y ejemplos en el foro oficial de Arduino *https://forum.arduino.cc/t/aporte-libreria-busunhilo-bus-bidireccional-maestro-esclavo-por-1-cable/1467364* .
 
 - Direcciones de esclavo (1..254) y **difusión** (dirección 0, solo escritura).
 - **Registros** de 8 bits (256 por esclavo) y **bloques** de hasta 16 bytes (displays, buffers).
