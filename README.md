@@ -8,17 +8,13 @@ Librería que nos permite implementar un puerto en modo bidireccional, e incluye
 
 ---
 
+**Video Introduccion**
+[![Intro en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=ZAvaRIxDqq8) 
 
-[![Intro en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=ZAvaRIxDqq8) (Introduccion)
-
+**Videos de ejemplos practicos**
 [![Demo1 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=IaVxYmmLfTs)
 [![Demo2 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=6IhEgQjhAKA)
 [![Demo3 en YouTube](https://img.shields.io/badge/▶_Ver_demo-YouTube-red)](https://www.youtube.com/watch?v=r5mtYzlJufs)
-
-
-
-
-
 
 
 <a id="espanol"></a>
